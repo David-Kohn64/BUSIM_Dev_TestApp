@@ -29,7 +29,7 @@ wss.on('connection', (ws) => {
     })
 })
 
-function count() {
+function count() { //increments counter and send updated data to all clients
     counter++
     console.log(counter)
     wss.clients.forEach((client) => {
@@ -38,7 +38,6 @@ function count() {
 }
 
 const PORT = 3001
-
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
 })
