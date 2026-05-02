@@ -8,6 +8,7 @@ const server = http.createServer(app)
 const wss = new WebSocketServer({ server })
 
 let counter = 0
+let randomCounter = 0
 let interval
 
 wss.on('connection', (ws) => {
@@ -22,6 +23,10 @@ wss.on('connection', (ws) => {
             console.log("Stoppped counter")
             clearInterval(interval)
         }
+        else if(m.toString() == "random"){
+            console.log("Random")
+            random(-10, 10)
+        }
     })
 
     ws.on('close', () => {
@@ -33,7 +38,14 @@ function count() { //increments counter and send updated data to all clients
     counter++
     console.log(counter)
     wss.clients.forEach((client) => {
-        client.send(counter)
+        client.send(JSON.stringify({ type: "counter", value: counter }))
+    })
+}
+
+function random(min, max){
+    randomCounter += Math.floor(Math.random() * (max - min + 1) + min)
+    wss.clients.forEach((client) => {
+        client.send(JSON.stringify({ type: "random", value: randomCounter}))
     })
 }
 
