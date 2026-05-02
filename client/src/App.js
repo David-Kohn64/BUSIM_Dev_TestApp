@@ -4,6 +4,7 @@ function App() {
   const wsRef = useRef(null)
   const [counter, setCounter] = useState(0)
   const [randomCounter, setRandom] = useState(0)
+  const [increment, setIncrement] = useState(0)
 
   useEffect(() => {
   wsRef.current = new WebSocket('ws://localhost:3001')
@@ -14,6 +15,9 @@ function App() {
     }
     else if (message.type === "random"){
       setRandom(message.value)
+    }
+    else if (message.type === "increment"){
+      setIncrement(message.value)
     }
   }
 
@@ -26,6 +30,9 @@ function App() {
 
     <h1>Random: {randomCounter}</h1>
     <button onClick={() => wsRef.current.send('random')}>Press me.</button>
+
+    <h1>Increment: {increment}</h1>
+    <button onClick={() => wsRef.current.send('increment')}>Press me.</button>
   </div>
   )
 }
