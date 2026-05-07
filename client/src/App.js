@@ -10,11 +10,22 @@ function App() {
   const [display2Val, incrementDisplay2] = useState(0)
   const intervalRef = useRef(null)
   const holdTimeoutRef = useRef(null)
+  const [randomCounter, setRandom] = useState(0)
+  const [increment, setIncrement] = useState(0)
 
   useEffect(() => {
   wsRef.current = new WebSocket('ws://localhost:3001')
   wsRef.current.onmessage = (m) => {
-    setCounter(m.data)
+    let message = (JSON.parse(m.data))
+    if (message.type === "counter"){
+      setCounter(message.value)
+    }
+    else if (message.type === "random"){
+      setRandom(message.value)
+    }
+    else if (message.type === "increment"){
+      setIncrement(message.value)
+    }
   }
 
   }, [])
@@ -52,6 +63,12 @@ function App() {
 
     <div id = "display2">{display2Val}</div>
     <button onMouseDown={holdStop} onMouseUp={holdRelease}>Hold 5s to Stop</button>
+
+    <h1>Random: {randomCounter}</h1>
+    <button onClick={() => wsRef.current.send('random')}>Press me.</button>
+
+    <h1>Increment: {increment}</h1>
+    <button onClick={() => wsRef.current.send('increment')}>Press me.</button>
   </div>
   )
 }
